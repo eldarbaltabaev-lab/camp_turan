@@ -143,7 +143,36 @@ function printSheets(files, mode = 'all') {
   for (const pass of passIndexes) {
     perPass.get(pass).forEach(({ file, sheetName }) => {
       const sheet = file.workbook.Sheets[sheetName];
-      const html = XLSX.utils.sheet_to_html(sheet, { editable: false });
+      let html = XLSX.utils.sheet_to_html(sheet, { editable: false });
+
+// --- АВТОЗАМЕНА ДАТЫ ---
+const today = new Date();
+const monthsEng = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const monthsRus = ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
+
+const d = today.getDate();
+const mEng = monthsEng[today.getMonth()];
+const mRus = monthsRus[today.getMonth()];
+const yyyy = today.getFullYear();
+
+const dd = String(d).padStart(2, '0');
+const mm = String(today.getMonth() + 1).padStart(2, '0');
+
+// Генерируем возможные варианты сегодняшней даты
+const todayFormats = [
+  `${d}-${mEng}-${yyyy}`,      // 5-Nov-2026
+  `${dd}.${mm}.${yyyy}`,       // 05.11.2026
+  `${d}.${mm}.${yyyy}`,        // 5.11.2026
+  `${dd}-${mm}-${yyyy}`,       // 05-11-2026
+  `${d} ${mRus} ${yyyy}`       // 5 ноя 2026
+];
+
+// Регулярка для поиска дат в тексте (форматы типа 3-Nov-2026 или 03.11.2026)
+const dateRegex = /\b(\d{1,2}[-\.\/][A-Za-zА-Яа-я]{3,4}[-\.\/]\d{4}|\d{1,2}[\.\/]\d{1,2}[\.\/]\d{4})\b/gi;
+
+// Ищем все даты в таблице и заменяем их на сегодняшнюю (в формате 5-Nov-2026)
+html = html.replace(dateRegex, todayFormats[0]);
+// -------------------------
 
       doc.write(`<div class="sheet">
         <div class="sheet-header">
