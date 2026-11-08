@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Настройки</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="winter.css" />
   <script>
     (function() {
       // Читаем тему из памяти
@@ -31,7 +32,7 @@
         
         <!-- ДОБАВИТЬ ВОТ ЭТО: -->
         <span class="theme-switch">
-          <button id="themeToggle" class="theme-toggle" title="Переключить тему">☀️</button>
+          <button id="themeToggle" class="theme-toggle" title="Переключить тему (T)" aria-label="Переключить тему">☀️</button>
 
         </span>
         
@@ -152,6 +153,7 @@
       <button id="resetKeywordsBtn" class="btn btn-secondary">Сбросить все ключевые слова</button>
       <span id="kwMsg" class="muted"></span>
     </div>
+    <footer class="foot">❄ <b>Подсчёт сотрудников</b> · v2.3 «Зима» · настройки хранятся в вашем браузере</footer>
   </main>
 
   <script src="settings.js"></script>
@@ -441,5 +443,6 @@
     renderLunchbox();
   </script>
   
+  <script src="winter.js"></script>
 </body>
 </html>
