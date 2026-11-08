@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Главная</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="winter.css" />
   <link rel="icon" type="image/png" href="favicon.png">
   <script>
     (function() {
@@ -31,18 +32,18 @@
       <nav class="nvg">
         <a href="index.html">Главная</a>
         <a href="page2.html">Настройки</a>
-        <button id="helpBtn" class="whats-new-btn" title="Справка">❓ Справка</button>
-        <button id="whatsNewBtn" class="whats-new-btn" title="Что нового">✨ Что нового</button>
-          <button id="themeToggle" class="theme-toggle" title="Переключить тему">☀️</button>
+        <button id="helpBtn" class="whats-new-btn" title="Справка (H)">❓ Справка</button>
+        <button id="whatsNewBtn" class="whats-new-btn" title="Что нового (N)">❄️ Что нового</button>
+          <button id="themeToggle" class="theme-toggle" title="Переключить тему (T)" aria-label="Переключить тему">☀️</button>
 
         </span>
       </nav>
     </div>
   </header>
   <div class="print-buttons">
-    <button id="exportBtn" class="print-btn print-btn-export">📥 Экспорт в Excel</button>
-    <button id="printDay" class="print-btn print-btn-day">☀️ Печать День</button>
-    <button id="printNight" class="print-btn print-btn-night">🌙 Печать Ночь</button>
+    <button id="exportBtn" class="print-btn print-btn-export" title="Выгрузить всех сотрудников в Excel (локации и адресаторы, День и Ночь)">📥 Экспорт в Excel</button>
+    <button id="printDay" class="print-btn print-btn-day" title="Напечатать только дневные листы">☀️ Печать День</button>
+    <button id="printNight" class="print-btn print-btn-night" title="Напечатать только ночные листы">🌙 Печать Ночь</button>
   </div>
   <main class="container">
     <h1>Подсчёт сотрудников по локациям</h1>
@@ -71,6 +72,8 @@
     <section id="filterPanel" class="filter-panel hidden"></section>
     <section id="results"></section>
 
+    <footer class="foot">❄ <b>Подсчёт сотрудников</b> · v2.3 «Зима» · файлы обрабатываются в вашем браузере</footer>
+
   </main>
   <script src="settings.js"></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
@@ -85,64 +88,113 @@
       });
     </script>
   <script type="module" src="script.js"></script>
-  <div id="whatsNewPanel" class="whats-new-panel hidden">
+  <script src="winter.js"></script>
+  <div id="whatsNewPanel" class="whats-new-panel hidden" role="dialog" aria-labelledby="wnTitle">
     <div class="whats-new-header">
-      <span class="whats-new-title">✨ Что нового</span>
-      <button id="whatsNewClose" class="whats-new-close" aria-label="Закрыть">×</button>
+      <span class="whats-new-title" id="wnTitle">❄️ Что нового</span>
+      <button id="whatsNewClose" class="whats-new-close" aria-label="Закрыть" title="Закрыть (Esc)">×</button>
     </div>
-   
-  
     <div class="whats-new-body">
       <div class="wn-version">
-        <span class="wn-version-tag">v2.2</span>
-        <span class="wn-version-date">29 октября 2026</span>
+        <span class="wn-version-tag">v2.3 · Зима</span>
+        <span class="wn-pill">новое</span>
+        <span class="wn-version-date">8 ноября 2026</span>
       </div>
-  
       <ul class="wn-list">
-        <li><b>Печать День / Ночь</b> — две кнопки, каждая печатает только свой период</li>
-        <li><b>Адресатор</b> — читается по подписи «Представитель клиентов»</li>
-        <li><b>Счётчик файлов</b> — рядом с локацией видно, в скольких файлах она встречается</li>
-        <li><b>Фильтр по клику</b> — клик по локации в итоге оставляет только её файлы</li>
-        <li><b>Две темы</b> — Доработана и доведена до функциональности смена темы</li>
-        <li><b>Логотип на каждой странице</b> — печать с шапкой файла и листа</li>
-        <li><b>Скорость</b> — убраны тяжёлые анимации, фон стал плавнее, сделана более углубленная работа над оптимизацией</li>
-        <li><b>Экспорт</b> — добавлена возможность экспортировать данные сотрудников для удобства и скорости в работе!</li>
+        <li style="--i:0"><i class="wn-ic">🌌</i><div><b>Зимняя тема</b><span class="d">«Полярная ночь» (тёмная) и «Иней» (светлая): ледяная палитра, северное сияние, иней по углам экрана.</span></div></li>
+        <li style="--i:1"><i class="wn-ic">❄️</i><div><b>Снегопад и метель</b><span class="d">Снег разлетается от курсора. Когда файлы обработаны, по экрану проносится метель.</span></div></li>
+        <li style="--i:2"><i class="wn-ic">🎄</i><div><b>Гирлянда и Новый год</b><span class="d">Огоньки под шапкой зажигаются по очереди. В шапке счётчик дней до Нового года.</span></div></li>
+        <li style="--i:3"><i class="wn-ic">⛄</i><div><b>Снежные шапки</b><span class="d">Сугробы лежат на карточках файлов и на блоке «Общий итог».</span></div></li>
+        <li style="--i:4"><i class="wn-ic">🧊</i><div><b>Ледяная зона загрузки</b><span class="d">Блок заполняется льдом, внутри крупный процент. Когда тянете файл, рамка вспыхивает.</span></div></li>
+        <li style="--i:5"><i class="wn-ic">🔢</i><div><b>Живой итог</b><span class="d">Цифры в «Общем итоге» набегают, а карточки файлов появляются по очереди.</span></div></li>
+        <li style="--i:6"><i class="wn-ic">🧭</i><div><b>Плавная навигация</b><span class="d">Страницы сменяются плавно, активный раздел подсвечен в меню, кнопка «↑» возвращает наверх.</span></div></li>
+        <li style="--i:7"><i class="wn-ic">⌨️</i><div><b>Горячие клавиши</b><span class="d"><kbd>H</kbd> справка, <kbd>N</kbd> что нового, <kbd>T</kbd> тема, <kbd>W</kbd> зима, <kbd>Esc</kbd> закрыть окно.</span></div></li>
+        <li style="--i:8"><i class="wn-ic">📖</i><div><b>Справка переписана</b><span class="d">Оглавление, пошаговая инструкция, важные заметки и частые вопросы.</span></div></li>
+        <li style="--i:9"><i class="wn-ic">🛠️</i><div><b>Страница «Настройки»</b><span class="d">Ключевые слова оформлены метками, добавление и удаление стало нагляднее.</span></div></li>
+        <li style="--i:10"><i class="wn-ic">🧤</i><div><b>Выключатель зимы</b><span class="d">Кнопка ❄️ в шапке отключает все эффекты. Выбор запоминается.</span></div></li>
       </ul>
+      <details class="wn-old">
+        <summary>Раньше · v2.2 · 29 октября 2026</summary>
+        <ul class="wn-list">
+        <li style="--i:0"><i class="wn-ic">🖨️</i><div><b>Печать День / Ночь</b><span class="d">Две кнопки, каждая печатает только свой период.</span></div></li>
+        <li style="--i:1"><i class="wn-ic">✍️</i><div><b>Адресатор</b><span class="d">Читается по подписи «Представитель клиентов».</span></div></li>
+        <li style="--i:2"><i class="wn-ic">🗂️</i><div><b>Счётчик файлов</b><span class="d">Рядом с локацией видно, в скольких файлах она встречается.</span></div></li>
+        <li style="--i:3"><i class="wn-ic">🎯</i><div><b>Фильтр по клику</b><span class="d">Клик по локации в итоге оставляет только её файлы.</span></div></li>
+        <li style="--i:4"><i class="wn-ic">🌓</i><div><b>Две темы</b><span class="d">Доработана и доведена до функциональности смена темы.</span></div></li>
+        <li style="--i:5"><i class="wn-ic">🏷️</i><div><b>Логотип на каждой странице</b><span class="d">Печать с шапкой файла и листа.</span></div></li>
+        <li style="--i:6"><i class="wn-ic">⚡</i><div><b>Скорость</b><span class="d">Убраны тяжёлые анимации, фон стал плавнее, проведена оптимизация.</span></div></li>
+        <li style="--i:7"><i class="wn-ic">📤</i><div><b>Экспорт</b><span class="d">Данные сотрудников выгружаются в Excel для удобства и скорости в работе.</span></div></li>
+        </ul>
+      </details>
+      <div class="wn-foot"><span>Версия 2.3 «Зима»</span><button class="wn-ok" data-close>Понятно</button></div>
     </div>
   </div>
-   <!-- ========================================================= -->
-<!-- ПАНЕЛЬ СПРАВКИ -->
-<!-- ========================================================= -->
-<div id="helpPanel" class="whats-new-panel help-panel hidden">
+   <!-- ПАНЕЛЬ СПРАВКИ -->
+<div id="helpPanel" class="whats-new-panel help-panel hidden" role="dialog" aria-labelledby="hpTitle">
 <div class="whats-new-header">
-  <span class="whats-new-title">📖 Инструкция по работе</span>
-  <button id="helpClose" class="whats-new-close" aria-label="Закрыть">×</button>
+  <span class="whats-new-title" id="hpTitle">📖 Инструкция по работе</span>
+  <button id="helpClose" class="whats-new-close" aria-label="Закрыть" title="Закрыть (Esc)">×</button>
 </div>
 
 <div class="whats-new-body">
-  <h3>1. Импорт файлов</h3>
-  <p>Перетащите все Excel-файлы (<code>.xlsx</code>) в зону загрузки. Дождитесь, пока фиолетовая вода не заполнит блок полностью. Если появится сообщение об ошибке — проверьте, не поврежден ли файл.</p>
-
-  <h3>2. Проверка карточек (ВАЖНО!)</h3>
-  <p>После загрузки <b>обязательно просмотрите карточки каждого файла</b> внизу страницы. Убедитесь, что:</p>
-  <ul>
-    <li>Локация определилась верно (например, «АБК», «Лаборатория»). Если стоит «—», значит, программа не нашла название объекта в файле.</li>
-    <li>Адресатор считался правильно.</li>
-    <li>В таблицах «День» и «Ночь» есть цифры (если они там должны быть).</li>
-  </ul>
-
-  <h3>3. Фильтр и Общий итог</h3>
-  <p>В блоке «Общий итог» можно <b>кликнуть на любую локацию</b> (например, на ABK). Снизу останутся только те карточки файлов, где есть эта локация. Это удобно для проверки. Чтобы сбросить фильтр, нажмите на строку еще раз или на кнопку «Сбросить».</p>
-
-  <h3>4. Печать</h3>
-  <p>В правом нижнем углу есть две кнопки: <b>☀️ Печать День</b> и <b>🌙 Печать Ночь</b>. Каждая печатает только свои листы.</p>
-  <p><i>Какие файлы не пойдут в печать?</i> Программа автоматически пропускает листы, если в столбце <b>C</b> (начиная с 10-й строки) нет ни одной фамилии (только цифры или пусто). Перед печатью выскочит окошко со списком таких пропущенных файлов.Обьязательно их полностью проверьте! Если в этом файле есть сотрудники но сайт их не видит, значит столбец с именами был смещен нужно чтобы он был именно в столбце (С, 3)!</p>
-
-  <h3>5. Экспорт в Excel</h3>
-  <p>Кнопка <b>📥 Экспорт в Excel</b> собирает всех сотрудников из всех файлов, группирует их по Локациям и Адресаторам (отдельно День и Ночь) и выгружает в красивый файл для отчетности.</p>
-
-  <h3>6. Настройки</h3>
-  <p>Во вкладке «Настройки» можно изменить внешний вид печати (шрифты, рамки) и добавить новые ключевые слова для поиска локаций или ланчбоксов, если появились новые объекты.</p>
+  <p class="hp-lead">От загрузки файлов до печати и экспорта. Нужный раздел можно открыть кнопками ниже.</p>
+  <nav class="hp-toc" aria-label="Оглавление"><button type="button" data-go="hp1">Импорт</button><button type="button" data-go="hp2">Проверка</button><button type="button" data-go="hp3">Фильтр</button><button type="button" data-go="hp4">Печать</button><button type="button" data-go="hp5">Экспорт</button><button type="button" data-go="hp6">Настройки</button><button type="button" data-go="hp7">Клавиши</button><button type="button" data-go="hp8">Вопросы</button></nav>
+  <section class="hp-sec" id="hp1">
+    <h3><span class="hp-n">1</span>Импорт файлов</h3>
+    <p>Перетащите Excel-файлы (<code>.xlsx</code> или <code>.xls</code>) в зону загрузки или нажмите на неё и выберите файлы. Можно сразу много. Пока идёт обработка, блок заполняется голубым льдом, а внутри показан процент.</p>
+    <p>Если появится сообщение об ошибке, проверьте, не повреждён ли файл.</p>
+  </section>
+  <section class="hp-sec" id="hp2">
+    <h3><span class="hp-n">2</span>Проверка карточек</h3>
+    <div class="hp-note warn"><span class="hp-lbl">Важно</span><p>После загрузки обязательно просмотрите карточки каждого файла внизу страницы.</p></div>
+    <ul>
+      <li>Локация определилась верно (например, «АБК», «Лаборатория»). Если стоит «—», программа не нашла название объекта в файле.</li>
+      <li>Адресатор считался правильно.</li>
+      <li>В таблицах «День» и «Ночь» есть цифры, если они там должны быть.</li>
+    </ul>
+  </section>
+  <section class="hp-sec" id="hp3">
+    <h3><span class="hp-n">3</span>Фильтр и общий итог</h3>
+    <p>День и Ночь считаются отдельно, а метки «Ланчбокс» и «Диета» уходят в LBX. В блоке «Общий итог» можно <b>кликнуть на любую локацию</b>: внизу останутся только карточки файлов, где она есть. Удобно для проверки.</p>
+    <p>Чтобы сбросить фильтр, нажмите на выбранную строку ещё раз или на кнопку «Сбросить».</p>
+  </section>
+  <section class="hp-sec" id="hp4">
+    <h3><span class="hp-n">4</span>Печать</h3>
+    <p>Справа внизу две кнопки: <b>☀️ Печать День</b> и <b>🌙 Печать Ночь</b>. Каждая печатает только свои листы, с шапкой файла и листа на каждой странице.</p>
+    <div class="hp-note warn"><span class="hp-lbl">Какие файлы не попадут в печать</span><p>Лист пропускается, если в столбце <b>C</b> (начиная с 10-й строки) нет ни одной фамилии: только цифры или пусто. Перед печатью появится окно со списком таких файлов. Проверьте их обязательно. Если в файле есть сотрудники, а сайт их не видит, значит, столбец с именами сдвинут. Он должен быть именно в столбце C (третьем).</p></div>
+  </section>
+  <section class="hp-sec" id="hp5">
+    <h3><span class="hp-n">5</span>Экспорт в Excel</h3>
+    <p>Кнопка <b>📥 Экспорт в Excel</b> собирает всех сотрудников из всех файлов, группирует их по локациям и адресаторам (отдельно День и Ночь) и выгружает в готовый файл для отчётности.</p>
+  </section>
+  <section class="hp-sec" id="hp6">
+    <h3><span class="hp-n">6</span>Настройки</h3>
+    <p>На странице «Настройки» два блока. В первом меняется вид печати: рамки (цвет, толщина, стиль), размеры текста и заголовка, отступы ячеек, формат страницы (A4 или A3, книжная или альбомная) и поля.</p>
+    <p>Во втором блоке «Поиск и локации» можно добавить свои локации, дополнительные слова к встроенным и метки ланчбокса. Слова ищутся как часть названия, регистр не важен. После изменений перезагрузите файлы на главной странице.</p>
+  </section>
+  <section class="hp-sec" id="hp7">
+    <h3><span class="hp-n">7</span>Горячие клавиши</h3>
+    <div class="hp-keys">
+      <span><kbd>H</kbd></span><span>Справка (эта страница)</span>
+      <span><kbd>N</kbd></span><span>Что нового</span>
+      <span><kbd>T</kbd></span><span>Сменить тему</span>
+      <span><kbd>W</kbd></span><span>Включить или выключить зимние эффекты</span>
+      <span><kbd>Esc</kbd></span><span>Закрыть окно</span>
+    </div>
+    <p style="margin-top:10px">Клавиши работают в любой раскладке и не срабатывают, пока вы печатаете в поле ввода.</p>
+  </section>
+  <section class="hp-sec" id="hp8">
+    <h3><span class="hp-n">8</span>Частые вопросы</h3>
+    <div class="hp-faq">
+      <details><summary>У локации стоит «—»</summary><p>Программа не нашла название объекта. Добавьте новое слово на странице «Настройки», в блоке «Поиск и локации», и загрузите файлы заново.</p></details>
+      <details><summary>Файл не попал в печать</summary><p>Скорее всего, в столбце C (с 10-й строки) нет фамилий. Список пропущенных файлов показывается перед печатью.</p></details>
+      <details><summary>Что такое LBX?</summary><p>Это сотрудники с метками «Ланчбокс» или «Диета». Список меток можно менять в настройках.</p></details>
+      <details><summary>Как сбросить фильтр?</summary><p>Нажмите на выбранную строку в «Общем итоге» ещё раз или на кнопку «Сбросить».</p></details>
+      <details><summary>Пропали настройки</summary><p>Они хранятся в браузере. Если очистить данные сайта или открыть его на другом компьютере, настройки придётся задать заново.</p></details>
+      <details><summary>Снег мешает или тормозит</summary><p>Нажмите кнопку ❄️ в шапке или клавишу <kbd>W</kbd>. Все эффекты выключатся, а выбор запомнится.</p></details>
+    </div>
+  </section>
+  <div class="wn-foot"><span>Версия 2.3 «Зима»</span><button class="wn-ok" data-close>Понятно</button></div>
 </div>
 </div>
 </body>
