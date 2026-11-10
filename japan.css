@@ -1,0 +1,190 @@
+/* =====================================================================
+   japan.css · «Сакура в снегу» (雪桜)
+   Японская тема ПОВЕРХ зимней. Подключать ПОСЛЕ winter.css:
+     <link rel="stylesheet" href="japan.css">
+   Снег, иней и северное сияние остаются. Добавляются: палитра индиго + сакура + киноварь,
+   Фудзи и луна/солнце, бумажные фонарики, тории в зоне загрузки, красная печать, иероглифы.
+   Всё включается и выключается кнопкой 🌸 (клавиша S): без неё остаётся чистая зима.
+   ===================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Serif:wght@600;700&display=swap');
+
+/* ---------- ПАЛИТРА: тёмная «Ночной Киото», светлая «Васи» ---------- */
+html:not(.jp-off) {
+  --bg: #070a1c; --bg-2: #0d1230; --card: rgba(14, 18, 44, .76); --card-2: rgba(20, 26, 58, .93); --block: rgba(130, 115, 200, .22);
+  --border: rgba(249, 168, 201, .34); --border-soft: rgba(249, 168, 201, .15);
+  --text: #f6f1ff; --muted: #a6a3c6;
+  --accent: #f9a8c9; --accent-2: #c4b5fd; --accent-3: #7dd3fc; --teal: #5eead4; --warning: #fcd34d;
+  --gradient: linear-gradient(135deg, #f9a8c9 0%, #c4b5fd 50%, #7dd3fc 100%);
+  --gradient-soft: linear-gradient(135deg, rgba(249, 168, 201, .16), rgba(165, 180, 252, .10));
+  --focus-ring: 0 0 0 3px rgba(249, 168, 201, .5);
+  --glow: 0 0 40px rgba(249, 168, 201, .38); --glow-sm: 0 0 20px rgba(249, 168, 201, .26);
+  --shadow-card: 0 14px 40px rgba(2, 3, 16, .7); --shadow-hover: 0 18px 50px rgba(236, 110, 170, .28);
+  --on-accent: #2b0d1f; --panel: #0d1230;
+  --shu: #ff7a6b; --mtn: #0a1233; --mtn2: #0f1842; --cap: #dfe9ff; --sun: #f4f1e6;
+  --disp: 'Shippori Mincho', 'Noto Serif', 'PT Serif', Georgia, serif;
+}
+html:not(.jp-off)[data-theme="light"] {
+  --bg: #f5f1e8; --bg-2: #fffdf8; --card: rgba(255, 253, 248, .92); --card-2: #fbf7ee; --block: #eee6d6;
+  --border: #dacdb4; --border-soft: #e9e0cd;
+  --text: #1c2036; --muted: #5d607a;
+  --accent: #c2255c; --accent-2: #4f46e5; --accent-3: #0e7490; --teal: #0f766e; --warning: #b45309;
+  --gradient: linear-gradient(135deg, #be185d 0%, #6d28d9 55%, #0e7490 100%);
+  --gradient-soft: linear-gradient(135deg, rgba(194, 37, 92, .09), rgba(79, 70, 229, .06));
+  --focus-ring: 0 0 0 3px rgba(194, 37, 92, .28);
+  --glow: 0 10px 40px rgba(194, 37, 92, .22); --glow-sm: 0 5px 20px rgba(194, 37, 92, .15);
+  --shadow-card: 0 10px 30px rgba(50, 35, 20, .09); --shadow-hover: 0 20px 40px rgba(194, 37, 92, .18), 0 0 20px rgba(79, 70, 229, .10);
+  --on-accent: #ffffff; --panel: #fffdf8; --snow: #ffffff;
+  --shu: #c8372d; --mtn: #a9bcd6; --mtn2: #c5d3e6; --cap: #ffffff; --sun: #e2493b;
+  background-color: #f5f1e8;
+}
+html:not(.jp-off) * { scrollbar-color: rgba(249, 168, 201, .45) transparent; }
+html:not(.jp-off) ::selection { background: rgba(249, 168, 201, .38); color: inherit; }
+html:not(.jp-off)[data-theme="light"] ::selection { background: rgba(194, 37, 92, .22); }
+
+/* ---------- ФОН ---------- */
+html:not(.jp-off):not([data-theme="light"]) body { background: linear-gradient(180deg, #05071a 0%, #0a0f2e 55%, #15163d 100%) fixed; }
+html:not(.jp-off) body::before {
+  background:
+    radial-gradient(ellipse 55% 40% at 18% 0%, rgba(244, 114, 182, .18), transparent 70%),
+    radial-gradient(ellipse 50% 45% at 82% 6%, rgba(125, 211, 252, .16), transparent 70%),
+    radial-gradient(ellipse 70% 40% at 50% 105%, rgba(165, 180, 252, .16), transparent 70%);
+}
+html:not(.jp-off)[data-theme="light"] body {
+  background-image:
+    radial-gradient(circle at 10% 6%, rgba(186, 215, 245, .45), transparent 42%),
+    radial-gradient(circle at 92% 94%, rgba(251, 207, 232, .40), transparent 42%),
+    linear-gradient(180deg, #f8f4ea 0%, #e8eef5 100%);
+}
+html:not(.jp-off)[data-theme="light"]::after {
+  background:
+    radial-gradient(circle at 0 0, rgba(186, 215, 245, .50), transparent 22%), radial-gradient(circle at 100% 0, rgba(251, 207, 232, .40), transparent 20%),
+    radial-gradient(circle at 0 100%, rgba(186, 215, 245, .40), transparent 22%), radial-gradient(circle at 100% 100%, rgba(199, 210, 254, .45), transparent 24%);
+}
+
+/* ---------- ФУДЗИ С ЛУНОЙ (ночью) И КРАСНЫМ СОЛНЦЕМ (днём) ---------- */
+.jp-fuji { position: fixed; left: 0; right: 0; bottom: 0; height: min(44vh, 360px); z-index: 0; pointer-events: none; opacity: .92; }
+.jp-fuji svg { display: block; width: 100%; height: 100%; }
+.jp-fuji .mtn { fill: var(--mtn); }
+.jp-fuji .hill { fill: var(--mtn2); opacity: .8; }
+.jp-fuji .hill2 { fill: var(--mtn2); opacity: .95; }
+.jp-fuji .cap { fill: var(--cap); opacity: .92; }
+html:not(.jp-off)[data-theme="light"] .jp-fuji { opacity: .8; }
+
+/* ---------- ШАПКА ---------- */
+html:not(.jp-off) header { background: rgba(7, 10, 28, .74); }
+html:not(.jp-off)[data-theme="light"] header { background: rgba(255, 253, 248, .84); }
+html:not(.jp-off) header::after { background-image: linear-gradient(90deg, transparent 0%, #f9a8c9 22%, #ffffff 50%, #e2493b 78%, transparent 100%); }
+html:not(.jp-off)[data-theme="light"] header::after { background-image: linear-gradient(90deg, transparent 0%, #e2493b 20%, #be185d 50%, #6d28d9 80%, transparent 100%); }
+.japan-toggle { margin-left: 8px; }
+html.jp-off .japan-toggle { opacity: .5; }
+
+/* ---------- ЗАГОЛОВОК: цветок и печать «雪桜» ---------- */
+html:not(.jp-off) h1 {
+  letter-spacing: 0;
+  background: linear-gradient(100deg, #fde7f0 0%, #f9a8c9 32%, #ffffff 50%, #c4b5fd 70%, #7dd3fc 100%); background-size: 220% 100%;
+  -webkit-background-clip: text; background-clip: text;
+}
+html:not(.jp-off)[data-theme="light"] h1 { background: linear-gradient(100deg, #1c2036 0%, #be185d 60%, #6d28d9 100%); background-size: 100% 100%; -webkit-background-clip: text; background-clip: text; }
+html:not(.jp-off) h1::before { content: "❀"; }
+html:not(.jp-off) h1::after {
+  content: "雪桜"; display: inline-block; margin-left: .7em; padding: .12em .42em; vertical-align: .55em;
+  font: 700 .36em/1 var(--disp); letter-spacing: .08em; border: 1.5px solid var(--shu); border-radius: 4px;
+  -webkit-text-fill-color: var(--shu); transform: rotate(-4deg);
+}
+
+/* ---------- НАДПИСИ-ИЕРОГЛИФЫ (добавляет japan.js) ---------- */
+.jp-k { margin-left: .55em; font: 600 .78em/1 var(--disp); font-style: normal; letter-spacing: 0; color: var(--shu); white-space: nowrap; }
+.print-btn .jp-k { color: rgba(255, 255, 255, .88); }
+html.jp-off .jp-k { display: none !important; }
+
+/* ---------- ФОНАРИКИ вместо гирлянды ---------- */
+html:not(.jp-off) .garland { display: none !important; }
+.jp-lanterns { position: fixed; left: 0; right: 0; top: 67px; height: 96px; overflow: hidden; z-index: 55; pointer-events: none; animation: ldrop .9s cubic-bezier(.2, 1.4, .4, 1) backwards; }
+.jp-lanterns::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1.5px; background: linear-gradient(90deg, transparent, rgba(150, 125, 105, .85) 6%, rgba(150, 125, 105, .85) 94%, transparent); }
+@keyframes ldrop { from { transform: translateY(-60px); opacity: 0; } }
+.lan { position: absolute; top: 0; width: 0; height: 0; transform-origin: 50% 0; animation: lsway 5.5s ease-in-out infinite; animation-delay: calc(var(--d, 0) * -1s); }
+@keyframes lsway { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+.lan::before { content: ""; position: absolute; left: -.5px; top: 0; width: 1px; height: calc(var(--len) * 1px); background: rgba(150, 125, 105, .85); }
+.lan b {
+  position: absolute; left: -15px; top: calc(var(--len) * 1px); width: 30px; height: 38px; display: grid; place-items: center;
+  border-radius: 46% / 40%; font: 700 14px/1 var(--disp); color: #ffe9b0; text-shadow: 0 0 6px rgba(120, 20, 10, .7);
+  background:
+    repeating-linear-gradient(180deg, transparent 0 5px, rgba(90, 10, 10, .35) 5px 6px),
+    radial-gradient(ellipse at 50% 38%, #ff8f6b 0%, #e2392b 58%, #a31d1d 100%);
+  box-shadow: 0 0 16px rgba(255, 80, 50, .5), inset 0 -4px 8px rgba(80, 0, 0, .35);
+}
+.lan b::before, .lan b::after { content: ""; position: absolute; left: 5px; right: 5px; height: 5px; border-radius: 2px; background: #2a2330; }
+.lan b::before { top: -4px; }
+.lan b::after { bottom: -4px; }
+html:not(.jp-off)[data-theme="light"] .lan b { box-shadow: 0 3px 10px rgba(200, 50, 40, .35), inset 0 -4px 8px rgba(80, 0, 0, .35); }
+
+/* ---------- ЗОНА ЗАГРУЗКИ: тории, волны сэйгайха ---------- */
+html:not(.jp-off) .dropzone { border-color: rgba(249, 168, 201, .5); }
+html:not(.jp-off)[data-theme="light"] .dropzone { border-color: rgba(194, 37, 92, .35); }
+html:not(.jp-off) .dropzone:not(.processing):hover { box-shadow: var(--shadow-hover), inset 0 0 40px rgba(249, 168, 201, .14); }
+html:not(.jp-off) .dropzone.hover { box-shadow: var(--glow), inset 0 0 60px rgba(249, 168, 201, .22); }
+html:not(.jp-off) .water { background: linear-gradient(180deg, #fde4ef 0%, #e9a8d0 40%, #818cf8 100%); opacity: .93; }
+html:not(.jp-off) .water::after {
+  content: ""; position: absolute; inset: 0; opacity: .22; pointer-events: none; background-size: 40px 20px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 20'><g fill='none' stroke='white' stroke-width='1'><circle cx='20' cy='20' r='19'/><circle cx='20' cy='20' r='13'/><circle cx='20' cy='20' r='7'/><circle cx='0' cy='10' r='19'/><circle cx='0' cy='10' r='13'/><circle cx='0' cy='10' r='7'/><circle cx='40' cy='10' r='19'/><circle cx='40' cy='10' r='13'/><circle cx='40' cy='10' r='7'/></g></svg>");
+}
+html:not(.jp-off) .wave-a { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 30' preserveAspectRatio='none'><path d='M0,15 C50,30 100,0 150,15 C175,22 200,15 200,15 L200,30 L0,30 Z' fill='%23ffe4ef'/></svg>") !important; }
+html:not(.jp-off) .wave-b { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 30' preserveAspectRatio='none'><path d='M0,15 C50,0 100,30 150,15 C175,8 200,15 200,15 L200,30 L0,30 Z' fill='%23f9a8c9'/></svg>") !important; }
+html:not(.jp-off) .dropzone-inner::before {
+  content: ""; display: block; width: 60px; height: 52px; margin: 0 auto 4px; font-size: 0; animation: none;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 56'><g fill='%23e2493b'><path d='M1 9 Q32 1 63 9 L61 15 Q32 8 3 15Z'/><rect x='9' y='17' width='46' height='5' rx='1'/><rect x='14' y='15' width='6' height='40' rx='1'/><rect x='44' y='15' width='6' height='40' rx='1'/><rect x='29' y='9' width='6' height='9'/></g></svg>") center / contain no-repeat;
+  filter: drop-shadow(0 0 12px rgba(226, 73, 59, .5));
+}
+html:not(.jp-off) .dropzone-inner strong { text-shadow: 0 0 12px rgba(249, 168, 201, .45); }
+html:not(.jp-off)[data-theme="light"] .dropzone-inner strong { text-shadow: none; }
+html:not(.jp-off) .dropzone.hover .dropzone-inner strong::after { content: "Отпускайте, как лепесток на снег"; }
+
+/* ---------- КАРТОЧКИ, ИТОГ, СТАТУС ---------- */
+html:not(.jp-off) .summary::after {
+  content: "計"; position: absolute; right: 22px; top: 16px; z-index: 2; width: 38px; height: 38px; display: grid; place-items: center;
+  border-radius: 6px; background: #d62f25; color: #fff3e6; font: 700 22px/1 var(--disp); transform: rotate(-6deg); opacity: .92; pointer-events: none;
+  box-shadow: 0 2px 10px rgba(214, 47, 37, .45), inset 0 0 0 2px rgba(255, 255, 255, .25);
+}
+html:not(.jp-off) .file-title::before { content: "❀ "; }
+html:not(.jp-off) #status::before { content: "❀"; }
+html:not(.jp-off) #results:empty::before { content: "🗻"; }
+html:not(.jp-off) .sheet-addr { border-color: rgba(125, 211, 252, .4); color: var(--accent-3); }
+html:not(.jp-off) table.counts.clickable tbody tr.selected, html:not(.jp-off) table.counts.clickable tbody tr.selected:hover { background: rgba(249, 168, 201, .14) !important; }
+html:not(.jp-off)[data-theme="light"] table.counts.clickable tbody tr.selected, html:not(.jp-off)[data-theme="light"] table.counts.clickable tbody tr.selected:hover { background: rgba(194, 37, 92, .08) !important; }
+html:not(.jp-off) table.counts.clickable tbody tr.selected.lbx, html:not(.jp-off)[data-theme="light"] table.counts.clickable tbody tr.selected.lbx { background: rgba(94, 234, 212, .13) !important; }
+
+/* ---------- КНОПКИ: солнце, ночь, матча ---------- */
+html:not(.jp-off) .print-btn { font-family: 'Inter', system-ui, sans-serif; }
+html:not(.jp-off) .print-btn-day { background: linear-gradient(135deg, #f59e0b, #dc2626); box-shadow: 0 8px 24px rgba(220, 38, 38, .4); }
+html:not(.jp-off) .print-btn-day:hover { box-shadow: 0 12px 30px rgba(220, 38, 38, .7); }
+html:not(.jp-off) .print-btn-night { background: linear-gradient(135deg, #4f46e5, #1e1b4b); box-shadow: 0 8px 24px rgba(79, 70, 229, .45); }
+html:not(.jp-off) .print-btn-night:hover { box-shadow: 0 12px 30px rgba(79, 70, 229, .75); }
+html:not(.jp-off) .print-btn-export { background: linear-gradient(135deg, #65a30d, #365314); box-shadow: 0 8px 24px rgba(101, 163, 13, .4); }
+html:not(.jp-off) .print-btn-export:hover { box-shadow: 0 12px 30px rgba(101, 163, 13, .7); }
+
+/* ---------- ПАНЕЛИ «Что нового» и «Справка» ---------- */
+html:not(.jp-off) .whats-new-panel { background: rgba(10, 13, 36, .95); }
+html:not(.jp-off)[data-theme="light"] .whats-new-panel { background: #fffdf8; }
+html:not(.jp-off) .help-panel { background: rgba(10, 13, 36, .96) !important; }
+html:not(.jp-off)[data-theme="light"] .help-panel { background: #fffdf8 !important; }
+html:not(.jp-off) .whats-new-header { background: linear-gradient(135deg, rgba(249, 168, 201, .22), rgba(165, 180, 252, .10) 60%, transparent); }
+html:not(.jp-off) .whats-new-header::after { content: "桜"; font: 700 92px/1 var(--disp); opacity: .09; }
+html:not(.jp-off) .wn-pill { background: var(--shu); color: #fff; }
+html:not(.jp-off) .hp-note.warn { background: rgba(252, 211, 77, .10); }
+
+/* ---------- ВЫКЛЮЧАТЕЛИ, АДАПТИВ, ПЕЧАТЬ ---------- */
+html.jp-off .jp-fuji, html.jp-off .jp-lanterns, html.jp-off #sakura { display: none !important; }
+html.winter-off .jp-lanterns, html.winter-off #sakura { display: none !important; }
+html.winter-off .lan, html.winter-off h1::after { animation: none; }
+#sakura { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 46; pointer-events: none; }
+@media (max-width: 700px) { .jp-lanterns { display: none; } html:not(.jp-off) .summary::after { width: 32px; height: 32px; font-size: 18px; right: 14px; } }
+@media (prefers-reduced-motion: reduce) { .lan, .jp-lanterns { animation: none !important; } }
+@media print { .jp-fuji, .jp-lanterns, #sakura, .japan-toggle, .jp-k, .summary::after { display: none !important; } }
+
+/* ---------- Окно «Часть листов не попадёт в печать»: печать-«注» (внимание) ---------- */
+html:not(.jp-off) .pd-card.pd-warn::after {
+  content: "注"; position: absolute; right: 18px; top: 22px; width: 32px; height: 32px; display: grid; place-items: center;
+  border-radius: 5px; background: #d62f25; color: #fff3e6; font: 700 19px/1 var(--disp); transform: rotate(5deg); opacity: .9; pointer-events: none;
+  box-shadow: 0 2px 8px rgba(214, 47, 37, .4), inset 0 0 0 2px rgba(255, 255, 255, .25);
+}
+html:not(.jp-off) .pd-card.pd-warn .pd-head { padding-right: 62px; }

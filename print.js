@@ -21,15 +21,196 @@ function sheetHasDataInColumnC(workbook, sheetName) {
   return false;
 }
 
+/* ---------- Окно «Не все листы пойдут в печать» (вместо alert) ---------- */
+let _pdOpen = false;
+
+function pdEsc(s) {
+  return String(s).replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+}
+
+function pdPlural(n, one, few, many) {
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return one;
+  if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
+  return many;
+}
+
+function pdInjectStyles() {
+  if (document.getElementById('pdStyles')) return;
+  const st = document.createElement('style');
+  st.id = 'pdStyles';
+  st.textContent = `
+    .pd-overlay { position: fixed; inset: 0; z-index: 10050; display: grid; place-items: center; padding: 16px;
+      background: rgba(3, 6, 20, .55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: pdFade .22s ease; }
+    .pd-card { position: relative; display: flex; flex-direction: column; width: min(540px, 100%); max-height: min(88vh, 660px); overflow: hidden;
+      border-radius: 20px; border: 1px solid var(--border, #ccc); background: var(--panel, #fff); color: var(--text, #111);
+      box-shadow: var(--shadow-hover, 0 20px 60px rgba(0, 0, 0, .35)); animation: pdIn .3s cubic-bezier(.2, .8, .2, 1); }
+    .pd-card::before { content: ""; height: 3px; flex: none; background: var(--gradient, linear-gradient(90deg, #6366f1, #06b6d4)); }
+    .pd-card.pd-warn::before { background: linear-gradient(90deg, var(--warning, #f59e0b), var(--accent, #ef4444)); }
+    .pd-head { display: flex; gap: 14px; align-items: flex-start; padding: 20px 22px 12px; }
+    .pd-icon { flex: none; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px; font-size: 22px;
+      background: var(--gradient-soft, rgba(99, 102, 241, .12)); border: 1px solid var(--border-soft, #ddd); }
+    .pd-title { margin: 2px 0 4px; font: 700 18px/1.25 var(--disp, inherit); color: var(--text, #111); }
+    .pd-lead { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--muted, #666); }
+    .pd-lead b { color: var(--text, #111); }
+    .pd-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 4px 22px 8px; overscroll-behavior: contain; }
+    .pd-note { margin: 6px 0 12px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border-soft, #ddd);
+      border-left: 4px solid var(--warning, #f59e0b); background: rgba(252, 211, 77, .10); font-size: 13px; line-height: 1.5; }
+    .pd-note b { display: block; margin-bottom: 2px; font: 800 11px var(--disp, inherit); letter-spacing: .08em; text-transform: uppercase; color: var(--warning, #b45309); }
+    .pd-list { margin: 0; padding: 0; list-style: none; }
+    .pd-list li { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 6px 0; padding: 9px 12px;
+      border-radius: 12px; border: 1px solid var(--border-soft, #ddd); background: var(--block, rgba(0, 0, 0, .04)); }
+    .pd-file { flex: 1 1 auto; min-width: 0; font-size: 13px; font-weight: 600; word-break: break-word; }
+    .pd-tags { flex: none; display: flex; align-items: center; gap: 6px; }
+    .pd-sheet { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--muted, #666); }
+    .pd-chip { padding: 2px 9px; border-radius: 99px; font: 700 11px/1.5 inherit; white-space: nowrap; }
+    .pd-chip.day { background: rgba(245, 158, 11, .18); color: var(--warning, #b45309); }
+    .pd-chip.night { background: rgba(129, 140, 248, .2); color: var(--accent-2, #4f46e5); }
+    .pd-foot { flex: none; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 22px 18px;
+      border-top: 1px dashed var(--border-soft, #ddd); }
+    .pd-foot-r { display: flex; gap: 8px; margin-left: auto; }
+    .pd-btn { margin: 0; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--border, #ccc); background: transparent; color: var(--text, #111);
+      font: 700 13px/1.2 inherit; cursor: pointer; box-shadow: none; transition: transform .2s, box-shadow .2s, border-color .2s; }
+    .pd-btn:hover { transform: translateY(-1px); border-color: var(--accent, #6366f1); }
+    .pd-btn.pd-primary { border-color: transparent; background: var(--gradient, #6366f1); color: var(--on-accent, #fff); box-shadow: var(--glow-sm, none); }
+    .pd-btn.pd-primary:hover { box-shadow: var(--glow, none); }
+    .pd-link { margin: 0; padding: 6px 2px; border: 0; background: none; box-shadow: none; color: var(--muted, #666); font: 600 12px inherit;
+      text-decoration: underline dotted; text-underline-offset: 3px; cursor: pointer; }
+    .pd-link:hover { color: var(--accent, #6366f1); }
+    @keyframes pdFade { from { opacity: 0; } }
+    @keyframes pdIn { from { opacity: 0; transform: translateY(14px) scale(.97); } }
+    @media (max-width: 600px) {
+      .pd-overlay { align-items: end; padding: 0; }
+      .pd-card { width: 100%; max-height: 88vh; border-radius: 20px 20px 0 0; }
+      .pd-foot-r { width: 100%; } .pd-foot-r .pd-btn { flex: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) { .pd-overlay, .pd-card { animation: none; } }
+    @media print { .pd-overlay { display: none !important; } }
+  `;
+  document.head.appendChild(st);
+}
+
+/**
+ * opts.kind: 'empty' | 'skipped'
+ * Возвращает Promise<boolean>: true — «Печатать остальные», false — отмена / закрыто.
+ */
+function showPrintDialog(opts) {
+  return new Promise((resolve) => {
+    if (_pdOpen) { resolve(false); return; }
+    _pdOpen = true;
+    pdInjectStyles();
+
+    const skipped = opts.skipped || [];
+    const total = opts.totalToPrint || 0;
+    const all = total + skipped.length;
+    const canPrint = opts.kind === 'skipped' && total > 0;
+    const modeLabel = opts.mode === 'day' ? 'День' : opts.mode === 'night' ? 'Ночь' : 'День и Ночь';
+
+    let icon, title, lead;
+    if (opts.kind === 'empty') {
+      icon = '📂'; title = 'Файлы ещё не загружены';
+      lead = 'Сначала перетащите .xlsx в зону загрузки, затем нажмите печать.';
+    } else if (canPrint) {
+      icon = '🖨️'; title = 'Часть листов не попадёт в печать';
+      lead = `К печати готово <b>${total}</b> ${pdPlural(total, 'лист', 'листа', 'листов')} из <b>${all}</b>. Пропущено: <b>${skipped.length}</b>.`;
+    } else if (skipped.length) {
+      icon = '📄'; title = 'Печатать нечего';
+      lead = `Во всех листах (${skipped.length}) в столбце C нет ни одной фамилии.`;
+    } else {
+      icon = '📄'; title = 'Нет листов для печати';
+      lead = `В загруженных файлах нет листов для режима «${modeLabel}».`;
+    }
+
+    const note = skipped.length
+      ? `<div class="pd-note"><b>Почему так</b>Лист пропускается, если в столбце C (с 10-й строки) нет ни одной фамилии. Если сотрудники в файле есть, проверьте, не сдвинут ли столбец с именами.</div>`
+      : '';
+    const list = skipped.length
+      ? `<ul class="pd-list">${skipped.map((s) => `
+          <li>
+            <span class="pd-file">${pdEsc(s.fileName)}</span>
+            <span class="pd-tags">
+              <span class="pd-sheet" title="${pdEsc(s.sheetName)}">«${pdEsc(s.sheetName)}»</span>
+              <span class="pd-chip ${s.pass === 1 ? 'night' : 'day'}">${s.pass === 1 ? 'Ночь' : 'День'}</span>
+            </span>
+          </li>`).join('')}</ul>`
+      : '';
+
+    const overlay = document.createElement('div');
+    overlay.className = 'pd-overlay';
+    overlay.innerHTML = `
+      <div class="pd-card ${skipped.length ? 'pd-warn' : ''}" role="dialog" aria-modal="true" aria-labelledby="pdTitle">
+        <div class="pd-head">
+          <span class="pd-icon" aria-hidden="true">${icon}</span>
+          <div><div class="pd-title" id="pdTitle">${title}</div><p class="pd-lead">${lead}</p></div>
+        </div>
+        <div class="pd-body">${note}${list}</div>
+        <div class="pd-foot">
+          ${skipped.length ? '<button type="button" class="pd-link" data-act="copy">Скопировать список</button>' : ''}
+          <div class="pd-foot-r">
+            ${canPrint ? '<button type="button" class="pd-btn" data-act="cancel">Отмена</button>' : ''}
+            <button type="button" class="pd-btn pd-primary" data-act="ok">${canPrint ? `Печатать остальные (${total})` : 'Понятно'}</button>
+          </div>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+
+    const prevFocus = document.activeElement;
+    const okBtn = overlay.querySelector('[data-act="ok"]');
+    okBtn.focus();
+
+    function close(result) {
+      document.removeEventListener('keydown', onKey, true);
+      overlay.remove();
+      _pdOpen = false;
+      if (prevFocus && prevFocus.focus) { try { prevFocus.focus(); } catch (e) { /* ничего */ } }
+      resolve(result);
+    }
+
+    function onKey(e) {
+      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(false); return; }
+      if (e.key === 'Tab') {
+        const items = [...overlay.querySelectorAll('button')];
+        if (!items.length) return;
+        const first = items[0], last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        return;
+      }
+      e.stopPropagation(); // горячие клавиши сайта (H, N, T, W, S) не должны срабатывать под окном
+    }
+    document.addEventListener('keydown', onKey, true);
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) { close(false); return; }
+      const btn = e.target.closest('[data-act]');
+      if (!btn) return;
+      const act = btn.dataset.act;
+      if (act === 'ok') close(canPrint);
+      else if (act === 'cancel') close(false);
+      else if (act === 'copy') {
+        const text = skipped.map((s, i) => `${i + 1}. ${s.fileName} — лист «${s.sheetName}» (${s.pass === 1 ? 'Ночь' : 'День'})`).join('\n');
+        const done = () => { btn.textContent = 'Скопировано ✓'; setTimeout(() => { btn.textContent = 'Скопировать список'; }, 1600); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, done);
+        else {
+          const ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;opacity:0;';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); } catch (err) { /* ничего */ }
+          ta.remove(); done();
+        }
+      }
+    });
+  });
+}
+
 /**
  * mode: 'all' | 'day' | 'night'
  *   'day'  — только первый лист каждого файла
  *   'night' — только второй лист каждого файла
  *   'all'  — оба, по порядку
  */
-function printSheets(files, mode = 'all') {
+async function printSheets(files, mode = 'all') {
   if (!files || !files.length) {
-    alert('Сначала импортируйте файлы');
+    await showPrintDialog({ kind: 'empty' });
     return;
   }
 
@@ -48,7 +229,7 @@ function printSheets(files, mode = 'all') {
       if (!sheetName) return;
 
       if (!sheetHasDataInColumnC(file.workbook, sheetName)) {
-        skipped.push({ fileName: file.name, sheetName });
+        skipped.push({ fileName: file.name, sheetName, pass });
         return;
       }
 
@@ -56,18 +237,13 @@ function printSheets(files, mode = 'all') {
     });
   }
 
-  if (skipped.length) {
-    const lines = skipped.map(
-      (s, i) => `${i + 1}. ${s.fileName} — лист «${s.sheetName}»`
-    );
-    alert(
-      'Эти листы не отправлены на печать (в столбце C нет данных):\n\n' +
-      lines.join('\n')
-    );
-  }
-
   const totalToPrint = [...perPass.values()].reduce((n, a) => n + a.length, 0);
-  if (!totalToPrint) return;
+
+  // Красивое окно вместо alert: показывает пропущенные листы и даёт отменить печать
+  if (skipped.length || !totalToPrint) {
+    const proceed = await showPrintDialog({ kind: 'skipped', skipped, totalToPrint, mode });
+    if (!proceed || !totalToPrint) return;
+  }
 
   const iframe = document.createElement('iframe');
   iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;';

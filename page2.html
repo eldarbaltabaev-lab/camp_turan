@@ -6,12 +6,14 @@
   <title>Настройки</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="winter.css" />
+  <link rel="stylesheet" href="japan.css" />
   <script>
     (function() {
       // Читаем тему из памяти
       var theme = localStorage.getItem('site-theme') || 'dark';
       // Применяем её к самому первому тегу <html>
       document.documentElement.setAttribute('data-theme', theme);
+      try { if (localStorage.getItem('japan') === 'off') document.documentElement.classList.add('jp-off'); } catch (e) {}
       // Отключаем анимацию переходов при загрузке, чтобы не было плавного "перекрашивания"
       document.documentElement.classList.add('no-transition');
       // Включаем анимацию обратно, когда страница загрузится
@@ -153,7 +155,7 @@
       <button id="resetKeywordsBtn" class="btn btn-secondary">Сбросить все ключевые слова</button>
       <span id="kwMsg" class="muted"></span>
     </div>
-    <footer class="foot">❄ <b>Подсчёт сотрудников</b> · v2.3 «Зима» · настройки хранятся в вашем браузере</footer>
+    <footer class="foot">❄ <b>Подсчёт сотрудников</b> · v2.4 «Сакура в снегу» · настройки хранятся в вашем браузере</footer>
   </main>
 
   <script src="settings.js"></script>
@@ -444,5 +446,6 @@
   </script>
   
   <script src="winter.js"></script>
+  <script src="japan.js"></script>
 </body>
 </html>

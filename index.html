@@ -6,6 +6,7 @@
   <title>Главная</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="winter.css" />
+  <link rel="stylesheet" href="japan.css" />
   <link rel="icon" type="image/png" href="favicon.png">
   <script>
     (function() {
@@ -13,6 +14,7 @@
       var theme = localStorage.getItem('site-theme') || 'dark';
       // Применяем её к самому первому тегу <html>
       document.documentElement.setAttribute('data-theme', theme);
+      try { if (localStorage.getItem('japan') === 'off') document.documentElement.classList.add('jp-off'); } catch (e) {}
       // Отключаем анимацию переходов при загрузке, чтобы не было плавного "перекрашивания"
       document.documentElement.classList.add('no-transition');
       // Включаем анимацию обратно, когда страница загрузится
@@ -72,7 +74,7 @@
     <section id="filterPanel" class="filter-panel hidden"></section>
     <section id="results"></section>
 
-    <footer class="foot">❄ <b>Подсчёт сотрудников</b> · v2.3 «Зима» · файлы обрабатываются в вашем браузере</footer>
+    <footer class="foot">❄ <b>Подсчёт сотрудников</b> · v2.4 «Сакура в снегу» · файлы обрабатываются в вашем браузере</footer>
 
   </main>
   <script src="settings.js"></script>
@@ -89,6 +91,7 @@
     </script>
   <script type="module" src="script.js"></script>
   <script src="winter.js"></script>
+  <script src="japan.js"></script>
   <div id="whatsNewPanel" class="whats-new-panel hidden" role="dialog" aria-labelledby="wnTitle">
     <div class="whats-new-header">
       <span class="whats-new-title" id="wnTitle">❄️ Что нового</span>
@@ -96,11 +99,22 @@
     </div>
     <div class="whats-new-body">
       <div class="wn-version">
-        <span class="wn-version-tag">v2.3 · Зима</span>
+        <span class="wn-version-tag">v2.4 · Сакура в снегу</span>
         <span class="wn-pill">новое</span>
-        <span class="wn-version-date">8 ноября 2026</span>
+        <span class="wn-version-date">11 ноября 2026</span>
       </div>
       <ul class="wn-list">
+        <li style="--i:0"><i class="wn-ic">🌸</i><div><b>Сакура в снегу</b><span class="d">Лепестки летят вместе со снегом и разлетаются от курсора. Когда файлы обработаны, налетает порыв ветра.</span></div></li>
+        <li style="--i:1"><i class="wn-ic">🗻</i><div><b>Фудзи на фоне</b><span class="d">Гора со снежной шапкой. В тёмной теме над ней луна, в светлой красное солнце.</span></div></li>
+        <li style="--i:2"><i class="wn-ic">🏮</i><div><b>Бумажные фонарики</b><span class="d">Вместо гирлянды под шапкой качаются красные фонарики.</span></div></li>
+        <li style="--i:3"><i class="wn-ic">⛩️</i><div><b>Тории и красная печать</b><span class="d">В зоне загрузки ворота тории и волны сэйгайха, на «Общем итоге» печать.</span></div></li>
+        <li style="--i:4"><i class="wn-ic">📜</i><div><b>Иероглифы</b><span class="d">Мелкие подписи рядом с русскими: 昼 День, 夜 Ночь, 設定 Настройки. Интерфейс остался русским.</span></div></li>
+        <li style="--i:5"><i class="wn-ic">🎨</i><div><b>Новая палитра</b><span class="d">Индиго ночи, сакура и киноварь. В светлой теме тёплая рисовая бумага.</span></div></li>
+        <li style="--i:6"><i class="wn-ic">🎍</i><div><b>Выключатель стиля</b><span class="d">Кнопка 🌸 в шапке или клавиша <kbd>S</kbd> возвращает чистую зиму. Выбор запоминается.</span></div></li>
+      </ul>
+      <details class="wn-old">
+        <summary>Раньше · v2.3 · Зима · 8 ноября 2026</summary>
+        <ul class="wn-list">
         <li style="--i:0"><i class="wn-ic">🌌</i><div><b>Зимняя тема</b><span class="d">«Полярная ночь» (тёмная) и «Иней» (светлая): ледяная палитра, северное сияние, иней по углам экрана.</span></div></li>
         <li style="--i:1"><i class="wn-ic">❄️</i><div><b>Снегопад и метель</b><span class="d">Снег разлетается от курсора. Когда файлы обработаны, по экрану проносится метель.</span></div></li>
         <li style="--i:2"><i class="wn-ic">🎄</i><div><b>Гирлянда и Новый год</b><span class="d">Огоньки под шапкой зажигаются по очереди. В шапке счётчик дней до Нового года.</span></div></li>
@@ -113,6 +127,7 @@
         <li style="--i:9"><i class="wn-ic">🛠️</i><div><b>Страница «Настройки»</b><span class="d">Ключевые слова оформлены метками, добавление и удаление стало нагляднее.</span></div></li>
         <li style="--i:10"><i class="wn-ic">🧤</i><div><b>Выключатель зимы</b><span class="d">Кнопка ❄️ в шапке отключает все эффекты. Выбор запоминается.</span></div></li>
       </ul>
+      </details>
       <details class="wn-old">
         <summary>Раньше · v2.2 · 29 октября 2026</summary>
         <ul class="wn-list">
@@ -126,7 +141,7 @@
         <li style="--i:7"><i class="wn-ic">📤</i><div><b>Экспорт</b><span class="d">Данные сотрудников выгружаются в Excel для удобства и скорости в работе.</span></div></li>
         </ul>
       </details>
-      <div class="wn-foot"><span>Версия 2.3 «Зима»</span><button class="wn-ok" data-close>Понятно</button></div>
+      <div class="wn-foot"><span>Версия 2.4 «Сакура в снегу»</span><button class="wn-ok" data-close>Понятно</button></div>
     </div>
   </div>
    <!-- ПАНЕЛЬ СПРАВКИ -->
@@ -179,6 +194,7 @@
       <span><kbd>N</kbd></span><span>Что нового</span>
       <span><kbd>T</kbd></span><span>Сменить тему</span>
       <span><kbd>W</kbd></span><span>Включить или выключить зимние эффекты</span>
+      <span><kbd>S</kbd></span><span>Включить или выключить японский стиль (сакура, фонарики)</span>
       <span><kbd>Esc</kbd></span><span>Закрыть окно</span>
     </div>
     <p style="margin-top:10px">Клавиши работают в любой раскладке и не срабатывают, пока вы печатаете в поле ввода.</p>
@@ -191,10 +207,11 @@
       <details><summary>Что такое LBX?</summary><p>Это сотрудники с метками «Ланчбокс» или «Диета». Список меток можно менять в настройках.</p></details>
       <details><summary>Как сбросить фильтр?</summary><p>Нажмите на выбранную строку в «Общем итоге» ещё раз или на кнопку «Сбросить».</p></details>
       <details><summary>Пропали настройки</summary><p>Они хранятся в браузере. Если очистить данные сайта или открыть его на другом компьютере, настройки придётся задать заново.</p></details>
+      <details><summary>Не нравится японский стиль</summary><p>Нажмите кнопку 🌸 в шапке или клавишу <kbd>S</kbd>: останется чистая зимняя тема. Если мешает движение, кнопка ❄️ (<kbd>W</kbd>) отключает снег, лепестки и фонарики.</p></details>
       <details><summary>Снег мешает или тормозит</summary><p>Нажмите кнопку ❄️ в шапке или клавишу <kbd>W</kbd>. Все эффекты выключатся, а выбор запомнится.</p></details>
     </div>
   </section>
-  <div class="wn-foot"><span>Версия 2.3 «Зима»</span><button class="wn-ok" data-close>Понятно</button></div>
+  <div class="wn-foot"><span>Версия 2.4 «Сакура в снегу»</span><button class="wn-ok" data-close>Понятно</button></div>
 </div>
 </div>
 </body>
